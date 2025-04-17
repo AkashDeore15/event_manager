@@ -76,23 +76,42 @@ class UserService:
     @classmethod
     async def update(cls, session: AsyncSession, user_id: UUID, update_data: Dict[str, str]) -> Optional[User]:
         try:
-            # validated_data = UserUpdate(**update_data).dict(exclude_unset=True)
-            validated_data = UserUpdate(**update_data).dict(exclude_unset=True)
-
+            # Validate the update data with Pydantic
+            validated_data = UserUpdate(**update_data).model_dump(exclude_unset=True)
+            
+            # Check if user exists before attempting update
+            user = await cls.get_by_id(session, user_id)
+            if not user:
+                logger.error(f"User {user_id} not found for update")
+                return None
+                
+            # Handle password separately to hash it
             if 'password' in validated_data:
                 validated_data['hashed_password'] = hash_password(validated_data.pop('password'))
+                
+            # Update the user
             query = update(User).where(User.id == user_id).values(**validated_data).execution_options(synchronize_session="fetch")
-            await cls._execute_query(session, query)
-            updated_user = await cls.get_by_id(session, user_id)
-            if updated_user:
-                session.refresh(updated_user)  # Explicitly refresh the updated user object
-                logger.info(f"User {user_id} updated successfully.")
+            result = await cls._execute_query(session, query)
+            
+            # If update was successful, refresh and return the user
+            if result:
+                updated_user = await cls.get_by_id(session, user_id)
+                await session.refresh(updated_user)
+                logger.info(f"User {user_id} updated successfully")
                 return updated_user
-            else:
-                logger.error(f"User {user_id} not found after update attempt.")
+                
             return None
-        except Exception as e:  # Broad exception handling for debugging
-            logger.error(f"Error during user update: {e}")
+            
+        except ValidationError as e:
+            logger.error(f"Validation error during user update: {e}")
+            return None
+        except SQLAlchemyError as e:
+            logger.error(f"Database error during user update: {e}")
+            await session.rollback()
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error during user update: {e}")
+            await session.rollback()
             return None
 
     @classmethod
