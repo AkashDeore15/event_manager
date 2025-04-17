@@ -54,15 +54,16 @@ def validate_url(url: Optional[str]) -> Optional[str]:
         if url.count('/') > 3 + (1 if 'www.' in url else 0):
             raise ValueError('Invalid GitHub URL format - no additional path segments allowed')
     
-    # LinkedIn-specific validation - check for correct domain and format
+    # Modified validation for LinkedIn URLs
     if 'linkedin' in url.lower() or 'linkdin' in url.lower():
         # Exact domain check to catch typos like "linkdin.com"
         if not re.match(r'^https?://(?:www\.)?linkedin\.com/', url):
             raise ValueError('Invalid LinkedIn URL format - domain must be exactly linkedin.com')
         
-        # Check for proper /in/ path and username
-        if not re.search(r'linkedin\.com/in/[a-zA-Z0-9][-a-zA-Z0-9_]{0,38}$', url):
-            raise ValueError('Invalid LinkedIn URL format - must be /in/username')
+        # Check for valid path structure - allow both /in/username and direct username
+        if not (re.search(r'linkedin\.com/in/[a-zA-Z0-9][-a-zA-Z0-9_]{0,38}$', url) or 
+                re.search(r'linkedin\.com/[a-zA-Z0-9][-a-zA-Z0-9_]{0,38}$', url)):
+            raise ValueError('Invalid LinkedIn URL format - must be a valid profile URL')
     
     return url
 
