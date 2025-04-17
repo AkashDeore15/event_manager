@@ -1,3 +1,5 @@
+import re
+from typing import Optional
 import pytest
 from pydantic import ValidationError
 from app.schemas.user_schemas import UserBase, UserUpdate
