@@ -13,11 +13,57 @@ class UserRole(str, Enum):
     ADMIN = "ADMIN"
 
 def validate_url(url: Optional[str]) -> Optional[str]:
+    """
+    Validates URL format with support for GitHub, LinkedIn, and general profile URLs.
+    
+    Args:
+        url: URL string to validate, or None
+        
+    Returns:
+        The validated URL or None
+        
+    Raises:
+        ValueError: If URL format is invalid
+    """
     if url is None:
         return url
-    url_regex = r'^https?:\/\/[^\s/$.?#].[^\s]*$'
-    if not re.match(url_regex, url):
-        raise ValueError('Invalid URL format')
+    
+    # Basic URL validation - must start with http:// or https://
+    if not url.startswith(('http://', 'https://')):
+        raise ValueError('Invalid URL format - must start with http:// or https://')
+    
+    # Check for spaces in URL
+    if ' ' in url:
+        raise ValueError('Invalid URL format - cannot contain spaces')
+    
+    # Check for incomplete URLs (just domain without path)
+    if url.count('/') < 3:
+        raise ValueError('Invalid URL format - incomplete URL')
+    
+    # GitHub-specific validation - check for correct domain and format
+    if 'github' in url.lower() or 'githb' in url.lower():
+        # Exact domain check to catch typos like "githb.com"
+        if not re.match(r'^https?://(?:www\.)?github\.com/', url):
+            raise ValueError('Invalid GitHub URL format - domain must be exactly github.com')
+        
+        # Check for username presence and format
+        if not re.search(r'github\.com/[a-zA-Z0-9][-a-zA-Z0-9_]{0,38}$', url):
+            raise ValueError('Invalid GitHub URL format - must end with valid username')
+        
+        # Check for no additional path segments
+        if url.count('/') > 3 + (1 if 'www.' in url else 0):
+            raise ValueError('Invalid GitHub URL format - no additional path segments allowed')
+    
+    # LinkedIn-specific validation - check for correct domain and format
+    if 'linkedin' in url.lower() or 'linkdin' in url.lower():
+        # Exact domain check to catch typos like "linkdin.com"
+        if not re.match(r'^https?://(?:www\.)?linkedin\.com/', url):
+            raise ValueError('Invalid LinkedIn URL format - domain must be exactly linkedin.com')
+        
+        # Check for proper /in/ path and username
+        if not re.search(r'linkedin\.com/in/[a-zA-Z0-9][-a-zA-Z0-9_]{0,38}$', url):
+            raise ValueError('Invalid LinkedIn URL format - must be /in/username')
+    
     return url
 
 def validate_password(password: Optional[str]) -> Optional[str]:
