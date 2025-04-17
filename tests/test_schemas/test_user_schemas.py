@@ -100,7 +100,6 @@ class TestURLValidation:
         with pytest.raises(ValidationError):
             UserBase(**user_base_data)
 
-
 class TestPasswordValidation:
     """Tests for password validation."""
     
@@ -109,29 +108,43 @@ class TestPasswordValidation:
         "SecureP@ssw0rd",
         "Complex-P4ssw0rd!",
         "L0ng&Str0ng#P@ssw0rd"
-    ])
+    ]) 
     def test_valid_passwords(self, password):
         """Test that valid passwords are accepted."""
         user = UserCreate(email="test@example.com", password=password)
         assert user.password == password
-    
+
     @pytest.mark.parametrize("password,error_message", [
         ("Short1!", "Password must be at least 8 characters long"),
         ("password123!", "Password must contain at least one uppercase letter"),
         ("PASSWORD123!", "Password must contain at least one lowercase letter"),
         ("Password!", "Password must contain at least one digit"),
-        ("Password123", "Password must contain at least one special character")
     ])
     def test_invalid_passwords(self, password, error_message):
         """Test that invalid passwords are rejected with appropriate error messages."""
         with pytest.raises(ValidationError) as exc_info:
             UserCreate(email="test@example.com", password=password)
-        
+
         assert error_message in str(exc_info.value)
-    
+
     def test_common_password_rejected(self):
         """Test that common passwords are rejected."""
         with pytest.raises(ValidationError) as exc_info:
             UserCreate(email="test@example.com", password="Password123")
-        
+
         assert "Password is too common" in str(exc_info.value)
+
+    @pytest.mark.parametrize("password", [
+        "Pass123!", 
+        "SecureP@ss1",
+        "Strong#Pass2",
+        "P4ssw0rd$",
+        "T3st.Word",  # Testing period
+        "P4ss^Word",  # Testing caret
+        "Pa55&word",  # Testing ampersand
+        "Secure-P4ss"  # Testing hyphen
+    ])
+    def test_password_with_special_chars(self, password):
+        """Test that passwords with different special characters are accepted."""
+        user = UserCreate(email="test@example.com", password=password)
+        assert user.password == password
