@@ -16,3 +16,4 @@
 **/db.sqlite
 **/qr_codes/*
 **/tests
+**/.coveragerc

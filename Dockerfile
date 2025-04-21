@@ -28,13 +28,17 @@ RUN pip install --upgrade pip \
 
 # Add a non-root user for security
 RUN useradd -m myuser
+
+# Create and set permissions for coverage directory
+RUN mkdir -p /myapp/.pytest_cache /myapp/htmlcov \
+    && chown -R myuser:myuser /myapp /myapp/.pytest_cache /myapp/htmlcov \
+    && chmod -R 755 /myapp/.pytest_cache /myapp/htmlcov
+
+# Switch to non-root user
 USER myuser
 
 # Copy the rest of your application's code with appropriate ownership
 COPY --chown=myuser:myuser . /myapp
-
-# Create QR code directory with correct permissions
-# RUN mkdir -p ${QR_CODE_DIR} && chown -R myuser:myuser ${QR_CODE_DIR}
 
 # Inform Docker that the container listens on the specified port at runtime.
 EXPOSE 8000
