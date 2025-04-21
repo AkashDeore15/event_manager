@@ -19,7 +19,7 @@ from app.services.jwt_service import create_access_token
 from app.utils.link_generation import create_user_links, generate_pagination_links
 from app.dependencies import get_settings
 from app.services.email_service import EmailService
-from app.schemas.user_schemas import validate_url  # Import the validator class
+from app.schemas.user_schemas import validate_url, validate_password  # Import the validator class  # Import the validator class
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -207,7 +207,7 @@ async def check_password_strength(password_data: dict):
     """Check password strength without creating a user."""
     try:
         password = password_data.get("password", "")
-        validate_url.validate_password(password)
+        validate_password(password)  # Direct call to validate_password
         return {"message": "Password meets strength requirements"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
