@@ -23,7 +23,7 @@ async def test_startup_event():
         
         # Create a mock settings object with the ACTUAL values used
         mock_settings = MagicMock()
-        mock_settings.database_url = "postgresql+asyncpg://user:password@postgres/myappdb"
+        mock_settings.database_url = "postgresql+asyncpg://user:password@localhost:5432/myappdb"
         mock_settings.debug = False
         mock_get_settings.return_value = mock_settings
         
