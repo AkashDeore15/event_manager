@@ -137,7 +137,7 @@ async def list_users(
     total_users = await UserService.count(db)
     users = await UserService.list_users(db, skip, limit)
 
-    user_responses = [UserResponse.model_validate(user) for user in users]
+    user_responses = [UserResponse.model_construct(**{c.name: getattr(user, c.name) for c in user.__table__.columns}) for user in users]
     pagination_links = generate_pagination_links(request, skip, limit, total_users)
     
     return UserListResponse(

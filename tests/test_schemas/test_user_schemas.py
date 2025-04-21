@@ -13,6 +13,7 @@ class TestUserModels:
         user = UserBase(**user_base_data)
         assert user.nickname == user_base_data["nickname"]
         assert user.email == user_base_data["email"]
+        assert user.first_name == user_base_data["first_name"]    
 
     def test_user_create_valid(self, user_create_data):
         """Test that the UserCreate model accepts valid data."""
