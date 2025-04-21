@@ -1,15 +1,23 @@
-## Issue 1 - [Issue 1](https://github.com/AkashDeore15/event_manager/issues/1)
-## Issue 2 - [Issue 2](https://github.com/AkashDeore15/event_manager/issues/3)
-## Issue 3 - [Issue 3](https://github.com/AkashDeore15/event_manager/issues/5)
-## Issue 4 - [Issue 4](https://github.com/AkashDeore15/event_manager/issues/7)
-## Issue 5 - [Issue 5](https://github.com/AkashDeore15/event_manager/issues/9)
-## Issue 6 - [Issue 6](https://github.com/AkashDeore15/event_manager/issues/11)
-## Issue 7 - [Issue 7](https://github.com/AkashDeore15/event_manager/issues/13)
-## Issue 8 - [Issue 8](https://github.com/AkashDeore15/event_manager/issues/15)
+# Issues Fixed
+
+[Issue 1](https://github.com/AkashDeore15/event_manager/issues/1)
+[Issue 2](https://github.com/AkashDeore15/event_manager/issues/3)
+[Issue 3](https://github.com/AkashDeore15/event_manager/issues/5)
+[Issue 4](https://github.com/AkashDeore15/event_manager/issues/7)
+[Issue 5](https://github.com/AkashDeore15/event_manager/issues/9)
+[Issue 6](https://github.com/AkashDeore15/event_manager/issues/11)
+[Issue 7](https://github.com/AkashDeore15/event_manager/issues/13)
+[Issue 8](https://github.com/AkashDeore15/event_manager/issues/15)
+
 
 # Docker Hub Image
 
-![alt text](image.png)
+[DockerHub Link](https://hub.docker.com/repository/docker/akashdeore15/event_manager/general)
+![DockerHub reference image](image.png)
+
+# Test Coverage
+
+![test coverage image](image-1.png)
 
 # Reflection
 
