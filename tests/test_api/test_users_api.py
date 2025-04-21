@@ -159,7 +159,7 @@ async def test_update_user_github(async_client, admin_user, admin_token):
 
 @pytest.mark.asyncio
 async def test_update_user_linkedin(async_client, admin_user, admin_token):
-    updated_data = {"linkedin_profile_url": "http://www.linkedin.com/kaw393939"}
+    updated_data = {"linkedin_profile_url": "https://www.linkedin.com/in/kaw393939"}  # Changed to use /in/ format
     headers = {"Authorization": f"Bearer {admin_token}"}
     response = await async_client.put(f"/users/{admin_user.id}", json=updated_data, headers=headers)
     assert response.status_code == 200
